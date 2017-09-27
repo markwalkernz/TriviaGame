@@ -1,0 +1,16 @@
+/* Coding boot camp week 5 homework. Trivia game. */
+
+body {
+	background: url("../images/UnionJack.svg") no-repeat center fixed;
+	font-family: Verdana, Geneva, sans-serif;
+	color: #ff0000;
+}
+
+.container {
+	margin-top: 80px;
+	opacity: 0.95;
+	background-color: #ffffff;
+	padding: 10px;
+	text-align: center;
+}
+
