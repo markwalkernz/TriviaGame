@@ -4,19 +4,19 @@
 // variables
 var imagePath = "assets/images/";		// this is the path to the images folder
 
-var answerTime = 5;						// amount of time that the user has to answer a question
+var answerTime = 10;					// amount of time that the user has to answer a question
 
-var timeRemaining = 5;					// amount of time remaining to answer a question, reset to answerTime at the start of each question
+var timeRemaining = 10;					// amount of time remaining to answer a question, reset to answerTime at the start of each question
 
 var intervalID;							// variable associated with the interval timer
 
-var questionIndex = 0;					// the index value of the question that is currently being asked
+var currentQuestion = 0;				// the index value of the question that is currently being asked
 
 var currentAnswer = "";					// variable containing the current correct answer
 
 var currentImage = "";					// variable containing the path to the current image
 
-var message = "";							// message to be shown to the user after a question round
+var message = "";						// message to be shown to the user after a question round
 
 var totalCorrect = 0;					// total number of correct answers
 
@@ -26,19 +26,26 @@ var totalTimeUp = 0;					// total number of questions where time ran out
 
 var questions = [
 {	question: "What is the name of the studio where The Beatles recorded their first album?",
-	options: ["Abbey Road", "Mersey Street", "Liverpool Road", "Quarry Lane"],
+	options: ["Abbey Road", "Mersey Avenue", "Liverpool Street", "Quarry Lane"],
 	answer: "Abbey Road", image: "abbeyRoad.gif"},
 
 {	question: "Which Rolling Stones song was used as the theme for the TV series 'Tour of Duty'?",
 	options: ["Ruby Tuesday", "Paint it Black", "Brown Sugar", "Start Me Up"],
 	answer: "Paint it Black", image: "rollingStones.gif"},
 
+{	question: "Who sang a duet with Freddie Mercury on the Queen song 'Under Pressure'?",
+	options: ["Eric Clapton", "Elton John", "David Bowie", "Vanilla Ice"],
+	answer: "David Bowie", image: "bowie.gif"},
+
+{	question: "What is the home town of the band Oasis?",
+	options: ["London", "Liverpool", "Edinburgh", "Manchester"],
+	answer: "Manchester", image: "oasis.gif"},
+
 ]
 
 
 
 // functions
-
 
 // start the timer
 function startTimer() {
@@ -70,6 +77,7 @@ function countdown() {
     }
 } //end of countdown function
 
+
 // run if the question is answered or if the countdown reaches zero
 function stopTimer(message) {
 
@@ -78,17 +86,18 @@ function stopTimer(message) {
 
 	// message to user
     $("#timer").html(message);
-
 } //end of stopTimer function
 
-// display a question
-function question(questionIndex) {
+
+// display a question with buttons for answer options
+function newQuestion(questionIndex) {
 
 	currentAnswer = questions[questionIndex].answer;			// set the current answer to the current question
 
 	currentImage = imagePath + questions[questionIndex].image;	// set the path of the image associated with the question
 
 	var answerOptions = questions[questionIndex].options;		// shorthand for the location of the answer options in the questions object
+
 
 	// empty the divs
 	$("#timer").empty();
@@ -112,83 +121,13 @@ function question(questionIndex) {
 			newButton.addClass("answerButton");
 
 		$("#answers").append(newButton);
-
 	}
 
-} //end of question function
-
-
-
-
-// show the correct answer, then decide if a new question should be shown
-function showAnswer() {
-
-	var answerPanel = $("<div>");
-
-		answerPanel.addClass(".answerPanel");
-		answerPanel.text("Answer: " + currentAnswer);
-
-	var answerImage = $("<img>");
-
-		answerImage.addClass(".answerImage");
-		answerImage.attr("src", currentImage);
-
-
-	$("#answers").html(answerPanel);
-	$("#answers").append(answerImage);
-
-	questionIndex ++;
-
-	if (questionIndex < questions.length) {
-		
-		question(questionIndex);
-
-		startTimer();	
-
-	} else {
-
-		gameOver();
-
-	}
-
-} //end of showAnswer function
-
-
-// game over
-function gameOver() {
-
-	// empty the divs
-	$("#timer").empty();
-	$("#question").empty();
-	$("#answers").empty();
-
-	$("#timer").html("Thanks for playing!");
-	$("#answers").html("<p>Number of questions answered correctly: " + totalCorrect + "</p>");
-	$("#answers").append("<p>Number of questions answered incorrectly: " + totalWrong + "</p>");
-	$("#answers").append("<p>Number of questions not answered: " + totalTimeUp + "</p>");
-
-	//TODO: show start button
-}
-
-
-// run the following after the document has loaded
-$(document).ready(function() {
-
-// start button
-// on click initialise game
-
-	question(questionIndex);
-
-	startTimer();
-
-	// click function for answer buttons
+	// assign click function to answer buttons
 	$ (".answerButton").on("click", function() {
 
 		// store the user's guess in a variable
 		var guess = $(this).attr("value");
-
-		console.log("guess: " + guess);
-		console.log("currentAnswer: " + currentAnswer);
 
 		// if guess is correct..
 		if (guess === currentAnswer) {
@@ -206,11 +145,70 @@ $(document).ready(function() {
 
 	}); //end of click function for answer buttons
 
-	// start button / reset game
+} //end of question function
 
-	// show answer and right or wrong for x seconds
 
-	// keep score, number of questions, number answered correctly, number answered incorrectly, number not answered
-	
+// show the correct answer, then decide if a new question should be shown
+function showAnswer() {
 
-}); // end of document.ready
+	var answerPanel = $("<div>");
+
+		answerPanel.addClass(".answerPanel");
+		answerPanel.text("Answer: " + currentAnswer);
+
+	var answerImage = $("<img>");
+
+		answerImage.addClass("answerImage");
+		answerImage.attr("src", currentImage);
+
+
+	$("#answers").html(answerPanel);
+	$("#answers").append(answerImage);
+
+	currentQuestion ++;
+
+	setTimeout(nextQuestion, 3000);
+
+} //end of showAnswer function
+
+
+// either show a new question or game over
+function nextQuestion() {
+
+	if (currentQuestion < questions.length) {
+		
+		newQuestion(currentQuestion);
+
+		startTimer();	
+
+	} else {
+
+		gameOver();
+	}
+}
+
+
+// game over
+function gameOver() {
+
+	$("#timer").html("Thanks for playing!");
+	$("#question").empty();
+	$("#answers").html("<p>Number of questions answered correctly: " + totalCorrect + "</p>");
+	$("#answers").append("<p>Number of questions answered incorrectly: " + totalWrong + "</p>");
+	$("#answers").append("<p>Number of questions not answered: " + totalTimeUp + "</p>");
+}
+
+
+
+// run the following after the document has loaded
+$(document).ready(function() {
+
+	// start button calls the first question and starts the timer
+	$ ("#startButton").on("click", function() {
+		newQuestion(currentQuestion);
+
+		startTimer();
+	});
+});
+
+

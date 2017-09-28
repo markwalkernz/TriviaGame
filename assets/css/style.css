@@ -14,3 +14,16 @@ body {
 	text-align: center;
 }
 
+#timer, #question, #answers {
+padding: 10px;
+min-height: 50px;
+}
+
+.answerButton {
+	margin: 10px;
+}
+
+.answerImage {
+	width: 200px;
+	padding: 10px;
+}
