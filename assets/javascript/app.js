@@ -200,10 +200,10 @@ function gameOver() {
 
 	// update the screen with the score
 	$("#timer").html("Thanks for playing!");
-	$("#question").html("<p>Number of questions answered correctly: " + totalCorrect + "</p>");
-	$("#question").append("<p>Number of questions answered incorrectly: " + totalWrong + "</p>");
-	$("#question").append("<p>Number of questions not answered: " + totalTimeUp + "</p>");
-	$("#answers").empty();
+	$("#answers").html("<p>Answered correctly: " + totalCorrect + "</p>");
+	$("#answers").append("<p>Answered incorrectly: " + totalWrong + "</p>");
+	$("#answers").append("<p>Not answered: " + totalTimeUp + "</p>");
+	$("#question").empty();
 
 	// call the startGame function
 	startGame();
@@ -228,7 +228,7 @@ function startGame() {
 		startButton.attr("id", "startButton");
 		startButton.text("Start Game");
 
-	$("#answers").append(startButton);
+	$("#question").append(startButton);
 
 	// start button calls the first question and starts the timer
 	$ ("#startButton").on("click", function() {
