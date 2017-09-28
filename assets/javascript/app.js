@@ -4,10 +4,12 @@
 // variables
 var imagePath = "assets/images/";		// this is the path to the images folder
 
-var answerTime = 10;					// amount of time that the user has to answer a question
+var questionTime = 15;					// amount of time that the user has to answer a question
 
-var timeRemaining = 10;					// amount of time remaining to answer a question, reset to answerTime at the start of each question
+var timeRemaining = 15;					// amount of time remaining to answer a question, reset to questionTime at the start of each question
 
+var answerTime = 7;						// amount of time that the answer is shown before moving on to the next question
+ 
 var intervalID;							// variable associated with the interval timer
 
 var currentQuestion = 0;				// the index value of the question that is currently being asked
@@ -20,10 +22,11 @@ var message = "";						// message to be shown to the user after a question round
 
 var totalCorrect = 0;					// total number of correct answers
 
-var totalWrong = 0;						// total umber of wrong answers
+var totalWrong = 0;						// total number of wrong answers
 
 var totalTimeUp = 0;					// total number of questions where time ran out
 
+// array of questions
 var questions = [
 {	question: "What is the name of the studio where The Beatles recorded their first album?",
 	options: ["Abbey Road", "Mersey Avenue", "Liverpool Street", "Quarry Lane"],
@@ -51,10 +54,11 @@ var questions = [
 function startTimer() {
 
 	// reset the timer to the time allowed for each answer
-	timeRemaining = answerTime;
+	timeRemaining = questionTime;
 
 	// run the countdown every second
 	intervalId = setInterval(countdown, 1000);
+
 } //end of startTimer function
 
 
@@ -86,6 +90,7 @@ function stopTimer(message) {
 
 	// message to user
     $("#timer").html(message);
+
 } //end of stopTimer function
 
 
@@ -109,7 +114,6 @@ function newQuestion(questionIndex) {
 
 		newQuestion.text("Question: " + questions[questionIndex].question);
 
-	// show the question on screen
 	$("#question").html(newQuestion);
 
 	// create a button for each answer option and show on screen
@@ -151,6 +155,7 @@ function newQuestion(questionIndex) {
 // show the correct answer, then decide if a new question should be shown
 function showAnswer() {
 
+	// create a div with the answer and the image
 	var answerPanel = $("<div>");
 
 		answerPanel.addClass(".answerPanel");
@@ -165,9 +170,11 @@ function showAnswer() {
 	$("#answers").html(answerPanel);
 	$("#answers").append(answerImage);
 
+	// increment the number of the question that has been asked
 	currentQuestion ++;
 
-	setTimeout(nextQuestion, 3000);
+	// show the answer for a specified time, then ask the next question
+	setTimeout(nextQuestion, answerTime * 1000);
 
 } //end of showAnswer function
 
@@ -185,30 +192,58 @@ function nextQuestion() {
 
 		gameOver();
 	}
-}
+} //end of nextQuestion function
 
 
 // game over
 function gameOver() {
 
+	// update the screen with the score
 	$("#timer").html("Thanks for playing!");
-	$("#question").empty();
-	$("#answers").html("<p>Number of questions answered correctly: " + totalCorrect + "</p>");
-	$("#answers").append("<p>Number of questions answered incorrectly: " + totalWrong + "</p>");
-	$("#answers").append("<p>Number of questions not answered: " + totalTimeUp + "</p>");
-}
+	$("#question").html("<p>Number of questions answered correctly: " + totalCorrect + "</p>");
+	$("#question").append("<p>Number of questions answered incorrectly: " + totalWrong + "</p>");
+	$("#question").append("<p>Number of questions not answered: " + totalTimeUp + "</p>");
+	$("#answers").empty();
+
+	// call the startGame function
+	startGame();
+} //end of gameOver function
 
 
+// reset variables and start game
+function startGame() {
 
-// run the following after the document has loaded
-$(document).ready(function() {
+	// reset variables
+	currentQuestion = 0;
+
+	totalCorrect = 0;
+
+	totalWrong = 0;
+
+	totalTimeUp = 0;
+
+	// create start button
+	var startButton = $("<button>");
+
+		startButton.attr("id", "startButton");
+		startButton.text("Start Game");
+
+	$("#answers").append(startButton);
 
 	// start button calls the first question and starts the timer
 	$ ("#startButton").on("click", function() {
 		newQuestion(currentQuestion);
-
 		startTimer();
-	});
+	
+	}); //end of click function for start button
+
+} // end of startGame function
+
+
+
+// run the startGame function after the document has loaded
+$(document).ready(function() {
+
+startGame();
+	
 });
-
-
