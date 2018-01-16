@@ -1,2 +1,7 @@
 # TriviaGame
-Coding Boot Camp Week 5 homework. Trivia game using javascript and jquery.
+
+Trivia game using javascript and jquery. Uses the following;
+
+- Bootstrap for layout
+- jquery for manipulation of the DOM
+- javascript interval timer to provide a countdown timer for each question
